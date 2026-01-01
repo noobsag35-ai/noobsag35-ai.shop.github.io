@@ -3,44 +3,47 @@
 <head>
 <meta charset="UTF-8">
 <title>پنل مدیریت شاپ</title>
+
 <style>
 body{
   font-family:sans-serif;
-  background:#0f172a;
+  background:#020617;
   color:#fff;
-  padding:20px;
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
 }
 .box{
-  max-width:400px;
-  margin:auto;
-  background:rgba(255,255,255,.08);
+  width:360px;
+  background:rgba(255,255,255,.1);
   padding:20px;
-  border-radius:16px;
+  border-radius:20px;
+  box-shadow:0 0 40px rgba(0,0,0,.6);
 }
 input,textarea,button{
   width:100%;
   margin:8px 0;
-  padding:10px;
-  border-radius:10px;
+  padding:12px;
+  border-radius:12px;
   border:none;
 }
 button{
   background:#22c55e;
-  color:#000;
   font-weight:bold;
   cursor:pointer;
 }
+.hidden{display:none}
 .logout{
   background:#ef4444;
-  color:#fff;
 }
-.hidden{display:none}
 </style>
 </head>
+
 <body>
 
-<div class="box" id="login">
-  <h3>🔐 ورود به پنل مدیریت</h3>
+<div class="box" id="loginBox">
+  <h3>🔐 ورود ادمین</h3>
   <input id="user" placeholder="نام کاربری">
   <input id="pass" type="password" placeholder="رمز عبور">
   <button onclick="login()">ورود</button>
@@ -48,68 +51,55 @@ button{
 
 <div class="box hidden" id="panel">
   <h3>🛒 مدیریت محصول</h3>
-
   <input id="name" placeholder="نام محصول">
   <input id="price" placeholder="قیمت">
   <input id="img" placeholder="لینک عکس">
   <textarea id="desc" placeholder="توضیحات"></textarea>
 
-  <button onclick="save()">💾 ذخیره تغییرات</button>
-  <button class="logout" onclick="logout()">🚪 خروج از پنل</button>
+  <button onclick="save()">💾 ذخیره محصول</button>
+  <button class="logout" onclick="logout()">🚪 خروج</button>
 </div>
 
 <script>
-// 🔐 اطلاعات ورود
-const USER="IRadmin46"
-const PASS="Admin1234567890"
-
-const loginBox=document.getElementById("login")
-const panel=document.getElementById("panel")
-
-// اگر قبلاً لاگین کرده
-if(localStorage.getItem("loggedIn")==="true"){
-  loginBox.classList.add("hidden")
-  panel.classList.remove("hidden")
-  load()
-}
+const USER = "IRadmin46";
+const PASS = "Admin1234567890";
 
 function login(){
-  if(user.value===USER && pass.value===PASS){
-    localStorage.setItem("loggedIn","true")
-    loginBox.classList.add("hidden")
-    panel.classList.remove("hidden")
-    load()
+  if(user.value === USER && pass.value === PASS){
+    loginBox.classList.add("hidden");
+    panel.classList.remove("hidden");
+    load();
   }else{
-    alert("❌ نام کاربری یا رمز عبور اشتباه است")
+    alert("❌ اطلاعات ورود اشتباه است");
   }
-}
-
-function logout(){
-  localStorage.removeItem("loggedIn")
-  panel.classList.add("hidden")
-  loginBox.classList.remove("hidden")
 }
 
 function save(){
-  const data={
-    name:name.value,
-    price:price.value,
-    img:img.value,
-    desc:desc.value
-  }
-  localStorage.setItem("shopProduct",JSON.stringify(data))
-  alert("✅ اطلاعات محصول ذخیره شد")
+  const product = {
+    name: name.value,
+    price: price.value,
+    img: img.value,
+    desc: desc.value
+  };
+
+  localStorage.setItem("shopProduct", JSON.stringify(product));
+  alert("✅ اطلاعات محصول ذخیره شد");
 }
 
 function load(){
-  const p=JSON.parse(localStorage.getItem("shopProduct"))
-  if(!p) return
-  name.value=p.name
-  price.value=p.price
-  img.value=p.img
-  desc.value=p.desc
+  const p = JSON.parse(localStorage.getItem("shopProduct"));
+  if(!p) return;
+  name.value = p.name;
+  price.value = p.price;
+  img.value = p.img;
+  desc.value = p.desc;
+}
+
+function logout(){
+  panel.classList.add("hidden");
+  loginBox.classList.remove("hidden");
 }
 </script>
 
 </body>
-  </html>
+</html>
