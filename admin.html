@@ -16,7 +16,7 @@ body{
 }
 
 .box{
-  width:360px;
+  width:380px;
   background:rgba(255,255,255,.1);
   backdrop-filter:blur(16px);
   border-radius:20px;
@@ -41,17 +41,18 @@ button{
 
 .admin-panel{display:none}
 
-.product{
+.card{
   background:rgba(255,255,255,.08);
-  padding:10px;
-  border-radius:12px;
-  margin-top:8px;
+  padding:12px;
+  border-radius:14px;
+  margin-top:10px;
   font-size:13px;
 }
+
 .del{
-  margin-top:6px;
   background:#ef4444;
-  color:#fff;
+  color:#000;
+  margin-top:6px;
 }
 </style>
 </head>
@@ -60,89 +61,133 @@ button{
 
 <div class="box">
 
-<!-- لاگین -->
-<div id="loginBox">
-  <h3>🔐 ورود ادمین</h3>
-  <input id="user" placeholder="نام کاربری">
-  <input id="pass" type="password" placeholder="پسورد">
-  <button onclick="login()">ورود</button>
-</div>
+  <!-- لاگین -->
+  <div id="loginBox">
+    <h3>🔐 ورود ادمین</h3>
+    <input id="user" placeholder="نام کاربری">
+    <input id="pass" type="password" placeholder="پسورد">
+    <button onclick="login()">ورود</button>
+  </div>
 
-<!-- پنل -->
-<div id="panel" class="admin-panel">
-  <h3>🎛 پنل مدیریتی</h3>
+  <!-- پنل -->
+  <div id="panel" class="admin-panel">
+    <h3>🎛 پنل مدیریتی شاپ</h3>
 
-  <input id="pname" placeholder="نام محصول">
-  <input id="pprice" placeholder="قیمت">
-  <input id="pimg" placeholder="لینک عکس">
-  
-  <!-- دسته بندی -->
-  <select id="pcat">
-    <option value="">انتخاب دسته بندی</option>
-    <option>VIP</option>
-    <option>ماشین</option>
-    <option>اسلحه</option>
-    <option>سکه</option>
-    <option>سایر</option>
-  </select>
+    <!-- افزودن دسته -->
+    <input id="newCat" placeholder="➕ نام دسته‌بندی جدید">
+    <button onclick="addCategory()">افزودن دسته‌بندی</button>
 
-  <input id="pdesc" placeholder="توضیحات">
+    <!-- لیست دسته -->
+    <div id="catList"></div>
 
-  <button onclick="saveProduct()">➕ افزودن محصول</button>
-  <button onclick="clearProducts()" style="background:#ef4444">🗑 حذف همه</button>
+    <hr style="margin:12px 0">
 
-  <h4 style="margin-top:12px">📦 محصولات ثبت‌شده</h4>
-  <div id="list"></div>
+    <!-- افزودن محصول -->
+    <input id="pname" placeholder="نام محصول">
+    <input id="pprice" placeholder="قیمت">
+    <input id="pimg" placeholder="لینک عکس">
 
-  <a href="shop.html" style="color:#4ade80;display:block;margin-top:10px">
-    رفتن به شاپ
-  </a>
-</div>
+    <select id="pcat"></select>
+
+    <input id="pdesc" placeholder="توضیحات">
+
+    <button onclick="saveProduct()">➕ افزودن محصول</button>
+    <button onclick="clearProducts()" class="del">🗑 حذف همه محصولات</button>
+
+    <div id="productList"></div>
+
+    <a href="shop.html" style="color:#4ade80;display:block;margin-top:10px">
+      🛒 رفتن به شاپ
+    </a>
+  </div>
 
 </div>
 
 <script>
-const USER="admin", PASS="1234";
+/* اطلاعات ورود */
+const USER = "IRadmin46";
+const PASS = "Admin1234567890";
 
+/* لاگین */
 function login(){
-  if(user.value===USER && pass.value===PASS){
+  if(user.value === USER && pass.value === PASS){
     loginBox.style.display="none";
     panel.style.display="block";
+    loadCategories();
     loadProducts();
-  }else alert("❌ نام کاربری یا پسورد اشتباه است");
+  }else{
+    alert("❌ اطلاعات ورود اشتباه است");
+  }
 }
 
-function saveProduct(){
-  if(!pname.value||!pcat.value)return alert("همه فیلدها رو پر کن");
+/* ===== دسته‌بندی ===== */
+function loadCategories(){
+  let cats = JSON.parse(localStorage.getItem("categories")) || [];
+  pcat.innerHTML = "";
+  catList.innerHTML = "";
 
-  let products=JSON.parse(localStorage.getItem("products"))||[];
+  cats.forEach((c,i)=>{
+    pcat.innerHTML += `<option value="${c}">${c}</option>`;
+    catList.innerHTML += `
+      <div class="card">
+        📦 ${c}
+        <button class="del" onclick="deleteCategory(${i})">حذف</button>
+      </div>`;
+  });
+}
+
+function addCategory(){
+  let cats = JSON.parse(localStorage.getItem("categories")) || [];
+  if(!newCat.value) return;
+
+  cats.push(newCat.value);
+  localStorage.setItem("categories",JSON.stringify(cats));
+  newCat.value="";
+  loadCategories();
+}
+
+function deleteCategory(i){
+  let cats = JSON.parse(localStorage.getItem("categories"));
+  cats.splice(i,1);
+  localStorage.setItem("categories",JSON.stringify(cats));
+  loadCategories();
+}
+
+/* ===== محصولات ===== */
+function saveProduct(){
+  let products = JSON.parse(localStorage.getItem("products")) || [];
+
   products.push({
+    id:Date.now(),
     name:pname.value,
     price:pprice.value,
     img:pimg.value,
     cat:pcat.value,
     desc:pdesc.value
   });
+
   localStorage.setItem("products",JSON.stringify(products));
-  loadProducts();
   alert("✅ محصول اضافه شد");
+  loadProducts();
 }
 
 function loadProducts(){
-  let products=JSON.parse(localStorage.getItem("products"))||[];
-  list.innerHTML="";
+  let products = JSON.parse(localStorage.getItem("products")) || [];
+  productList.innerHTML="";
+
   products.forEach((p,i)=>{
-    list.innerHTML+=`
-      <div class="product">
+    productList.innerHTML += `
+      <div class="card">
         <b>${p.name}</b><br>
-        💰 ${p.price} | 📁 ${p.cat}
+        💰 ${p.price} تومان<br>
+        📦 ${p.cat}
         <button class="del" onclick="deleteProduct(${i})">❌ حذف</button>
       </div>`;
   });
 }
 
 function deleteProduct(i){
-  let products=JSON.parse(localStorage.getItem("products"));
+  let products = JSON.parse(localStorage.getItem("products"));
   products.splice(i,1);
   localStorage.setItem("products",JSON.stringify(products));
   loadProducts();
