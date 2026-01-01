@@ -122,6 +122,9 @@ body{
   font-weight:bold;
   text-decoration:none;
 }
+.buy:hover{
+  transform:scale(1.05);
+}
 </style>
 </head>
 
@@ -135,10 +138,7 @@ body{
     <div class="server-name">IRAN GAME ROLE PLAY</div>
   </div>
 
-  <!-- دکمه ورود ادمین -->
-  <a class="admin-btn" href="admin.html">
-    🔐 لاگین ادمین
-  </a>
+  <a class="admin-btn" href="admin.html">🔐 لاگین ادمین</a>
 </div>
 
 <!-- شاپ -->
@@ -148,7 +148,9 @@ body{
     <div class="name" id="name"></div>
     <div class="price" id="price"></div>
     <div class="desc" id="desc"></div>
-    <a class="buy" href="#">🛒 خرید</a>
+
+    <!-- دکمه خرید -->
+    <a class="buy" id="buyBtn" target="_blank">🛒 خرید</a>
   </div>
 </div>
 
@@ -163,8 +165,18 @@ if(!p){
   name.innerText = p.name;
   price.innerText = p.price + " تومان";
   desc.innerText = p.desc;
+
+  // لینک خرید به تلگرام + پیام آماده
+  const text = `سلام 👋
+می‌خواهم این محصول را بخرم 👇
+
+📦 محصول: ${p.name}
+💰 قیمت: ${p.price} تومان
+`;
+  buyBtn.href =
+    "https://t.me/Shop_IR_GAME1?text=" + encodeURIComponent(text);
 }
 </script>
 
 </body>
-  </html>
+</html>
