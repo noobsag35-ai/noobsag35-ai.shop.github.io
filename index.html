@@ -2,180 +2,131 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>Shop | IRAN GAME ROLE PLAY</title>
+<title>Shop | IR GAME RP</title>
 
 <style>
-*{box-sizing:border-box;font-family:sans-serif}
 body{
   margin:0;
-  min-height:100vh;
   background:#020617;
   color:#fff;
+  font-family:sans-serif;
 }
-
-/* بک گراند */
-.bg{
-  position:fixed;
-  inset:0;
-  background:
-    radial-gradient(circle at top, rgba(0,255,150,.25), transparent 40%),
-    radial-gradient(circle at bottom, rgba(255,0,0,.25), transparent 40%);
-  filter:blur(80px);
-  z-index:-1;
-}
-
-/* ===== هدر ===== */
-.header{
+header{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  padding:16px 22px;
-  margin:16px;
-  border-radius:22px;
+  padding:16px;
 }
-
-.glass{
-  background:rgba(255,255,255,.12);
-  backdrop-filter:blur(18px);
-  border:1px solid rgba(255,255,255,.25);
-  box-shadow:0 10px 40px rgba(0,0,0,.45);
-}
-
-/* سمت چپ */
-.header-left{
-  display:flex;
-  align-items:center;
-  gap:12px;
-}
-.header-left img{
-  width:46px;
-  height:46px;
-  border-radius:50%;
-}
-.server-name{
-  font-size:16px;
-  font-weight:bold;
-}
-
-/* دکمه ادمین */
-.admin-btn{
-  padding:12px 18px;
-  border-radius:16px;
-  text-decoration:none;
+header img{width:42px;border-radius:50%}
+.btn{
+  padding:10px 14px;
+  border-radius:14px;
+  background:#22c55e;
   color:#000;
   font-weight:bold;
-  background:linear-gradient(135deg,#22c55e,#4ade80);
-  transition:.3s;
-}
-.admin-btn:hover{
-  transform:scale(1.05);
+  text-decoration:none;
 }
 
-/* ===== شاپ ===== */
+.search, .cats{
+  margin:10px;
+}
+input{
+  width:100%;
+  padding:12px;
+  border-radius:14px;
+  border:none;
+}
+.cats button{
+  margin:4px;
+  padding:8px 12px;
+  border:none;
+  border-radius:12px;
+  background:#334155;
+  color:#fff;
+}
+
 .shop{
-  display:flex;
-  justify-content:center;
-  margin-top:40px;
+  display:grid;
+  grid-template-columns:1fr;
+  gap:16px;
+  padding:16px;
 }
 
 .card{
-  width:340px;
-  background:rgba(255,255,255,.08);
-  backdrop-filter:blur(16px);
-  border-radius:22px;
-  padding:18px;
-  box-shadow:0 0 40px rgba(0,0,0,.6);
-  text-align:center;
+  background:rgba(255,255,255,.1);
+  padding:14px;
+  border-radius:18px;
 }
-
 .card img{
   width:100%;
-  height:180px;
+  height:160px;
   object-fit:cover;
-  border-radius:16px;
-  margin-bottom:12px;
+  border-radius:14px;
 }
-
-.name{
-  font-size:18px;
-  font-weight:bold;
-}
-
-.price{
-  margin:10px 0;
-  font-size:16px;
-  color:#22c55e;
-}
-
-.desc{
-  font-size:14px;
-  opacity:.85;
-  margin-bottom:14px;
-}
-
 .buy{
   display:block;
-  padding:14px;
-  border-radius:16px;
-  background:linear-gradient(135deg,#3b82f6,#60a5fa);
+  margin-top:10px;
+  padding:12px;
+  background:#3b82f6;
+  text-align:center;
+  border-radius:14px;
   color:#fff;
-  font-weight:bold;
   text-decoration:none;
-}
-.buy:hover{
-  transform:scale(1.05);
 }
 </style>
 </head>
 
 <body>
-<div class="bg"></div>
 
-<!-- هدر -->
-<div class="header glass">
-  <div class="header-left">
+<header>
+  <div>
     <img src="logo.png">
-    <div class="server-name">IRAN GAME ROLE PLAY</div>
+    IRAN GAME RP
   </div>
+  <a class="btn" href="admin.html">🔐 ادمین</a>
+</header>
 
-  <a class="admin-btn" href="admin.html">🔐 لاگین ادمین</a>
+<div class="search">
+  <input id="q" placeholder="🔍 جستجو محصول..." oninput="render()">
 </div>
 
-<!-- شاپ -->
-<div class="shop">
-  <div class="card">
-    <img id="img">
-    <div class="name" id="name"></div>
-    <div class="price" id="price"></div>
-    <div class="desc" id="desc"></div>
-
-    <!-- دکمه خرید -->
-    <a class="buy" id="buyBtn" target="_blank">🛒 خرید</a>
-  </div>
+<div class="cats">
+  <button onclick="setCat('همه')">همه</button>
+  <button onclick="setCat('VIP')">VIP</button>
+  <button onclick="setCat('ماشین')">ماشین</button>
+  <button onclick="setCat('اکانت')">اکانت</button>
+  <button onclick="setCat('پول')">پول</button>
 </div>
+
+<div class="shop" id="shop"></div>
 
 <script>
-const p = JSON.parse(localStorage.getItem("shopProduct"));
+let products = JSON.parse(localStorage.getItem("products")) || []
+let cat="همه"
 
-if(!p){
-  document.querySelector(".shop").innerHTML =
-    "<h3>❌ هنوز محصولی ثبت نشده</h3>";
-}else{
-  img.src = p.img;
-  name.innerText = p.name;
-  price.innerText = p.price + " تومان";
-  desc.innerText = p.desc;
+function setCat(c){cat=c;render()}
 
-  // لینک خرید به تلگرام + پیام آماده
-  const text = `سلام 👋
-می‌خواهم این محصول را بخرم 👇
-
-📦 محصول: ${p.name}
-💰 قیمت: ${p.price} تومان
-`;
-  buyBtn.href =
-    "https://t.me/Shop_IR_GAME1?text=" + encodeURIComponent(text);
+function render(){
+  shop.innerHTML=""
+  const s=q.value.toLowerCase()
+  products.filter(p=>{
+    return (cat==="همه"||p.category===cat) &&
+           p.name.toLowerCase().includes(s)
+  }).forEach(p=>{
+    shop.innerHTML+=`
+      <div class="card">
+        <img src="${p.img}">
+        <b>${p.name}</b><br>
+        💰 ${p.price}<br>
+        <small>${p.desc}</small>
+        <a class="buy" href="https://t.me/Shop_IR_GAME1" target="_blank">
+          🛒 خرید
+        </a>
+      </div>
+    `
+  })
 }
+render()
 </script>
 
 </body>
