@@ -9,16 +9,14 @@ body{
   font-family:sans-serif;
   background:#020617;
   color:#fff;
-  min-height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
+  padding:20px;
 }
 .box{
-  width:360px;
-  background:rgba(255,255,255,.1);
-  padding:20px;
-  border-radius:20px;
+  max-width:420px;
+  margin:auto;
+  background:rgba(255,255,255,.08);
+  padding:22px;
+  border-radius:18px;
   box-shadow:0 0 40px rgba(0,0,0,.6);
 }
 input,textarea,button{
@@ -29,19 +27,24 @@ input,textarea,button{
   border:none;
 }
 button{
-  background:#22c55e;
   font-weight:bold;
   cursor:pointer;
 }
-.hidden{display:none}
-.logout{
-  background:#ef4444;
+.save-btn{
+  background:linear-gradient(135deg,#22c55e,#4ade80);
+  color:#000;
 }
+.delete-btn{
+  background:linear-gradient(135deg,#ef4444,#f87171);
+  color:#000;
+}
+.hidden{display:none}
 </style>
 </head>
 
 <body>
 
+<!-- ورود -->
 <div class="box" id="loginBox">
   <h3>🔐 ورود ادمین</h3>
   <input id="user" placeholder="نام کاربری">
@@ -49,55 +52,73 @@ button{
   <button onclick="login()">ورود</button>
 </div>
 
+<!-- پنل -->
 <div class="box hidden" id="panel">
   <h3>🛒 مدیریت محصول</h3>
+
   <input id="name" placeholder="نام محصول">
-  <input id="price" placeholder="قیمت">
+  <input id="price" placeholder="قیمت (تومان)">
   <input id="img" placeholder="لینک عکس">
   <textarea id="desc" placeholder="توضیحات"></textarea>
 
-  <button onclick="save()">💾 ذخیره محصول</button>
-  <button class="logout" onclick="logout()">🚪 خروج</button>
+  <button class="save-btn" onclick="saveProduct()">💾 ذخیره / ویرایش محصول</button>
+  <button class="delete-btn" onclick="deleteProduct()">🗑 حذف محصول قبلی</button>
 </div>
 
 <script>
-const USER = "IRadmin46";
-const PASS = "Admin1234567890";
+const USER = "IRadmin46"
+const PASS = "Admin1234567890"
+
+const loginBox = document.getElementById("loginBox")
+const panel = document.getElementById("panel")
 
 function login(){
   if(user.value === USER && pass.value === PASS){
-    loginBox.classList.add("hidden");
-    panel.classList.remove("hidden");
-    load();
+    loginBox.classList.add("hidden")
+    panel.classList.remove("hidden")
+    loadProduct()
   }else{
-    alert("❌ اطلاعات ورود اشتباه است");
+    alert("❌ اطلاعات ورود اشتباه است")
   }
 }
 
-function save(){
+// ذخیره یا ویرایش
+function saveProduct(){
   const product = {
     name: name.value,
     price: price.value,
     img: img.value,
     desc: desc.value
-  };
-
-  localStorage.setItem("shopProduct", JSON.stringify(product));
-  alert("✅ اطلاعات محصول ذخیره شد");
+  }
+  localStorage.setItem("shopProduct", JSON.stringify(product))
+  alert("✅ محصول ذخیره / ویرایش شد")
 }
 
-function load(){
-  const p = JSON.parse(localStorage.getItem("shopProduct"));
-  if(!p) return;
-  name.value = p.name;
-  price.value = p.price;
-  img.value = p.img;
-  desc.value = p.desc;
+// لود محصول قبلی
+function loadProduct(){
+  const p = JSON.parse(localStorage.getItem("shopProduct"))
+  if(!p) return
+  name.value = p.name
+  price.value = p.price
+  img.value = p.img
+  desc.value = p.desc
 }
 
-function logout(){
-  panel.classList.add("hidden");
-  loginBox.classList.remove("hidden");
+// حذف محصول قبلی
+function deleteProduct(){
+  const p = localStorage.getItem("shopProduct")
+  if(!p){
+    alert("❌ محصولی برای حذف وجود ندارد")
+    return
+  }
+  if(confirm("⚠️ مطمئنی می‌خوای محصول قبلی حذف بشه؟")){
+    localStorage.removeItem("shopProduct")
+    name.value=""
+    price.value=""
+    img.value=""
+    desc.value=""
+    alert("🗑 محصول با موفقیت حذف شد")
+  }
 }
 </script>
 
