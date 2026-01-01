@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>Shop | IRAN GAME ROLE PLAY</title>
+
+<style>
+*{box-sizing:border-box;font-family:sans-serif}
+body{
+  margin:0;
+  min-height:100vh;
+  background:#020617;
+  color:#fff;
+}
+
+/* بک گراند */
+.bg{
+  position:fixed;
+  inset:0;
+  background:
+    radial-gradient(circle at top, rgba(0,255,150,.25), transparent 40%),
+    radial-gradient(circle at bottom, rgba(255,0,0,.25), transparent 40%);
+  filter:blur(80px);
+  z-index:-1;
+}
+
+/* ===== هدر ===== */
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:16px 22px;
+  margin:16px;
+  border-radius:22px;
+}
+
+.glass{
+  background:rgba(255,255,255,.12);
+  backdrop-filter:blur(18px);
+  border:1px solid rgba(255,255,255,.25);
+  box-shadow:0 10px 40px rgba(0,0,0,.45);
+}
+
+/* سمت چپ */
+.header-left{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.header-left img{
+  width:46px;
+  height:46px;
+  border-radius:50%;
+}
+.server-name{
+  font-size:16px;
+  font-weight:bold;
+}
+
+/* دکمه ادمین */
+.admin-btn{
+  padding:12px 18px;
+  border-radius:16px;
+  text-decoration:none;
+  color:#000;
+  font-weight:bold;
+  background:linear-gradient(135deg,#22c55e,#4ade80);
+  transition:.3s;
+}
+.admin-btn:hover{
+  transform:scale(1.05);
+}
+
+/* ===== شاپ ===== */
+.shop{
+  display:flex;
+  justify-content:center;
+  margin-top:40px;
+}
+
+.card{
+  width:340px;
+  background:rgba(255,255,255,.08);
+  backdrop-filter:blur(16px);
+  border-radius:22px;
+  padding:18px;
+  box-shadow:0 0 40px rgba(0,0,0,.6);
+  text-align:center;
+}
+
+.card img{
+  width:100%;
+  height:180px;
+  object-fit:cover;
+  border-radius:16px;
+  margin-bottom:12px;
+}
+
+.name{
+  font-size:18px;
+  font-weight:bold;
+}
+
+.price{
+  margin:10px 0;
+  font-size:16px;
+  color:#22c55e;
+}
+
+.desc{
+  font-size:14px;
+  opacity:.85;
+  margin-bottom:14px;
+}
+
+.buy{
+  display:block;
+  padding:14px;
+  border-radius:16px;
+  background:linear-gradient(135deg,#3b82f6,#60a5fa);
+  color:#fff;
+  font-weight:bold;
+  text-decoration:none;
+}
+</style>
+</head>
+
+<body>
+<div class="bg"></div>
+
+<!-- هدر -->
+<div class="header glass">
+  <div class="header-left">
+    <img src="logo.png">
+    <div class="server-name">IRAN GAME ROLE PLAY</div>
+  </div>
+
+  <!-- دکمه ورود ادمین -->
+  <a class="admin-btn" href="admin.html">
+    🔐 لاگین ادمین
+  </a>
+</div>
+
+<!-- شاپ -->
+<div class="shop">
+  <div class="card">
+    <img id="img">
+    <div class="name" id="name"></div>
+    <div class="price" id="price"></div>
+    <div class="desc" id="desc"></div>
+    <a class="buy" href="#">🛒 خرید</a>
+  </div>
+</div>
+
+<script>
+const p = JSON.parse(localStorage.getItem("shopProduct"));
+
+if(!p){
+  document.querySelector(".shop").innerHTML =
+    "<h3>❌ هنوز محصولی ثبت نشده</h3>";
+}else{
+  img.src = p.img;
+  name.innerText = p.name;
+  price.innerText = p.price + " تومان";
+  desc.innerText = p.desc;
+}
+</script>
+
+</body>
+  </html>
